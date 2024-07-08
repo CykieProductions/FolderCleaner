@@ -3,8 +3,6 @@ from watchdog.events import FileSystemEventHandler
 
 import os
 import time
-import json
-import shutil
 
 from file_group import FileGroup
 from helpers import *
@@ -13,7 +11,10 @@ USER_PATH = os.path.expanduser('~').replace("\\", "/")
 
 class FolderHandler(FileSystemEventHandler):
     def on_modified(self, event):
-        for fileName in os.listdir(tracked_Path):
+        FolderHandler.update_folder(tracked_Path)
+        
+    def update_folder(path:str) -> None:
+        for fileName in os.listdir(path):
             file_path = Helpers.join_path_str(tracked_Path, fileName)
             #skip if directory is found
             if os.path.isdir(file_path):
@@ -21,10 +22,13 @@ class FolderHandler(FileSystemEventHandler):
             
             for group in file_groups:
                 destination = group.get_file_destination(fileName)
+                
+                #TODO add renaming logic for duplicate file names
+                
                 if destination is not None:
                     os.rename(file_path, destination)
-        
 
+#* File Tracking Info
 tracked_Path = Helpers.join_path_str(USER_PATH, "Downloads")
 
 image_group = FileGroup(Helpers.join_path_str(USER_PATH, "Pictures", "Downloaded"), 
@@ -39,11 +43,14 @@ audio_group = FileGroup(Helpers.join_path_str(USER_PATH, "Music", "Downloaded"),
 file_groups = [image_group, video_group, audio_group,]
 
 
+#* Folder Watch Logic
 event_handler = FolderHandler()
 observer = Observer()
 
 observer.schedule(event_handler, tracked_Path, recursive=True)
 observer.start()
+# manually look at the target folder to start
+FolderHandler.update_folder(tracked_Path)
 
 try:
     while True:
@@ -51,5 +58,3 @@ try:
 except KeyboardInterrupt:
     observer.stop()
 observer.join()
-
-print("Goodnight")
