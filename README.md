@@ -1,2 +1,2 @@
 # FolderCleaner
- Automation script to help organize folders
+A simple automation script to help organize folders
