@@ -2,6 +2,7 @@ import os
 import re
 
 class Helpers:
+    
     @staticmethod
     def join_path_str(*paths:str) -> str:
         return os.path.join(*paths).replace("\\", "/")
@@ -17,9 +18,12 @@ class Helpers:
             new_suffix = int(pattern.group(1)) + 1
             new_base_name = base_name[:pattern.start()]
         else:
-            new_suffix = 1
+            new_suffix = 2
             new_base_name = base_name
         
         # Construct the new file name
         new_file_name = f"{new_base_name}_{new_suffix}{ext}"
         return new_file_name
+    
+    USER_PATH = os.path.expanduser('~').replace("\\", "/")
+    DOWNLOADS_PATH = join_path_str(USER_PATH, "Downloads")
