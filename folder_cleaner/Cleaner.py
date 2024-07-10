@@ -1,4 +1,3 @@
-import math
 from watchdog.observers import Observer
 
 import asyncio

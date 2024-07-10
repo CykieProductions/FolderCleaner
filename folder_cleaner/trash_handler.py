@@ -1,9 +1,10 @@
+import winshell
+import pymsgbox
+
 from file_group import Helpers
 from helpers import Helpers
 
 
-import pymsgbox
-import winshell
 
 
 async def try_empty_trash(max_size:int = 2000) -> bool:

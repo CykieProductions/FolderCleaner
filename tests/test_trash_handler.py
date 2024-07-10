@@ -3,7 +3,7 @@ import winshell
 import pytest
 from unittest.mock import patch, MagicMock
 
-from trash_handler import *
+from source.trash_handler import *
 
 @pytest.mark.parametrize('box_val,success,max_size', 
                         [('OK', True, 64), 

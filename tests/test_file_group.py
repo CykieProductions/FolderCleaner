@@ -1,8 +1,8 @@
 from unittest.mock import patch
 import pytest
 
-from helpers import Helpers
-from file_group import *
+from source.helpers import Helpers
+from source.file_group import *
 
 
 @pytest.mark.parametrize("test_input,expected", 
