@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-  pull:
+  pull_request:
 
 jobs:
   run-tests:
