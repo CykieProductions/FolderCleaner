@@ -3,9 +3,9 @@ import os
 from unittest.mock import patch
 import pytest
 
-from source.file_group import *
-from source.helpers import Helpers
-from source.folder_handler import FolderHandler 
+from folder_cleaner.file_group import *
+from folder_cleaner.helpers import Helpers
+from folder_cleaner.folder_handler import FolderHandler 
 
 def test_update_folder():
     with patch.object(os, "rename") as mock_rename:

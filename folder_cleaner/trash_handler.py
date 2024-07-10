@@ -1,8 +1,8 @@
 import winshell
 import pymsgbox
 
-from file_group import Helpers
-from helpers import Helpers
+from .file_group import Helpers
+from .helpers import Helpers
 
 
 

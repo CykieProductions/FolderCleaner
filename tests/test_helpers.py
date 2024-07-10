@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 
-from source.helpers import Helpers
+from folder_cleaner.helpers import Helpers
 
 def test_join_path_str():
     assert Helpers.join_path_str(os.path.expanduser('~'), "this", "should", "work.txt") == \

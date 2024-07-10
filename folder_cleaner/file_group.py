@@ -1,5 +1,5 @@
 import os
-from helpers import *
+from .helpers import *
 
 class FileGroup:
     def __init__(self, path:str, extensions:list) -> None:    

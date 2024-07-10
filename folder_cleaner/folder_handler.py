@@ -4,8 +4,8 @@ from watchdog.events import FileSystemEventHandler
 
 import os
 
-from file_group import FileGroup
-from helpers import *
+from .file_group import FileGroup
+from .helpers import *
 
 
 class FolderHandler(FileSystemEventHandler):
