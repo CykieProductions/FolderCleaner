@@ -1,19 +1,25 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=70.2.0", "wheel>=0.43.0"]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "FolderCleaner"
 version = "0.1.0"
 description = "A simple automation script to help organize folders"
 authors = ["Cykie Productions <cykiestudios@gmail.com>"]
+readme = "README.md"
 
-[tool.poetry.dependencies]
-python = "^3.12.4"
+[project.urls]
+Home = "https://github.com/CykieProductions/FolderCleaner"
+
+[options]
+python_requires = ">=3.12.4"
+
+[options.packages.find]
+where = "src"
+
+[options.extras_require]
+test = ["pytest>=8.2.2"]
+
+[options.dependencies]
 requests = "^2.32.3"
-
-[tool.poetry.dev-dependencies]
-pytest = "^8.2.2"
-
-[build-system]
-requires = ["poetry-core>=1.8.0"]
-build-backend = "poetry.core.masonry.api"
