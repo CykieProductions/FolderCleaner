@@ -1,3 +1,4 @@
+import math
 import os
 import re
 
@@ -25,5 +26,31 @@ class Helpers:
         new_file_name = f"{new_base_name}_{new_suffix}{ext}"
         return new_file_name
     
+    
+    def byte_to_mb(mb:int) -> int:
+        return mb / (1024 * 1024)
+    
+    def mb_to_byte(bytes:int) -> int:
+        return bytes * 1024 * 1024
+    
+    async def get_directory_size(directory:str, size_cap_mb:int = -1) -> int:
+        if size_cap_mb == -1:
+            size_cap_mb = math.inf
+        
+        total_size = 0
+        for (dirpath, dirnames, filenames) in os.walk(directory):
+            for file_name in filenames:
+                file_path = Helpers.join_path_str(dirpath, file_name)
+                total_size += os.path.getsize(file_path)
+                
+                # do we need to keep going?
+                if total_size > Helpers.mb_to_byte(size_cap_mb):
+                    return Helpers.byte_to_mb(total_size)
+            
+        return Helpers.byte_to_mb(total_size)
+    
+    
+    RECYCLE_PATH = "C:/$Recycle.Bin"
+    APPDATA_LOCAL = os.getenv('LOCALAPPDATA')
     USER_PATH = os.path.expanduser('~').replace("\\", "/")
     DOWNLOADS_PATH = join_path_str(USER_PATH, "Downloads")

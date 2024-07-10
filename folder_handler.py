@@ -45,6 +45,7 @@ class FolderHandler(FileSystemEventHandler):
             if max_iterations < 0 or max_iterations is None:
                 max_iterations = math.inf
             
+            #REVIEW - Consider using asyncio timeout: https://docs.python.org/3/library/asyncio-task.html#id11
             while dest and os.path.exists(dest):
                 if i >= max_iterations: break
                 file_name = Helpers.add_numeric_suffix(file_name)

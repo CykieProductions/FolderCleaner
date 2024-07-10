@@ -1,3 +1,4 @@
+import math
 from watchdog.observers import Observer
 
 import asyncio
@@ -5,25 +6,39 @@ import asyncio
 from folder_handler import FolderHandler
 from file_group import *
 from helpers import *
+from trash_handler import try_empty_trash
 
 #* Folder Watch Logic
 async def run_observer():
-    event_handler = FolderHandler(Helpers.join_path_str(Helpers.USER_PATH, "Downloads"), file_groups)
-    observer = Observer()
+    downloads_handler = FolderHandler(Helpers.join_path_str(Helpers.USER_PATH, "Downloads"), file_groups)
+    downloads_observer = Observer()
     
-    observer.schedule(event_handler, event_handler.tracked_path, recursive=True)
-    observer.start()
-    # manually look at the target folder to start
-    await event_handler.update_folder_async()
+    downloads_observer.schedule(downloads_handler, downloads_handler.tracked_path, recursive=False)
+    downloads_observer.start()
+    # manually check the target folder to start
+    await downloads_handler.update_folder_async()
+    
+    print("Before trash")
+    empty_trash_task = asyncio.create_task(try_empty_trash())
+    print("After trash")
     
     try:
         while True:
             #time.sleep(10)
             await asyncio.sleep(10)
+            
+            if empty_trash_task is not None and empty_trash_task.done():
+                print("Check trash")
+                #TODO - Schedule a trash check
+                pass
+            
     except KeyboardInterrupt:
-        observer.stop()
-    observer.join()
+        downloads_observer.stop()
+        empty_trash_task.cancel()
     
+    downloads_observer.join()
+
+## MAIN ##
 def main():
     asyncio.run(run_observer())
 
