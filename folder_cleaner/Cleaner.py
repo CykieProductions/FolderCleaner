@@ -1,11 +1,16 @@
+import sys
+sys.path.append(".")
+
 from watchdog.observers import Observer
 
 import asyncio
 
-from .folder_handler import FolderHandler
-from .file_group import *
-from .helpers import *
-from .trash_handler import try_empty_trash
+from folder_handler import FolderHandler
+from file_group import *
+from helpers import *
+from trash_handler import try_empty_trash
+
+
 
 #* Folder Watch Logic
 async def run_observer():

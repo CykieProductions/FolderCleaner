@@ -1,5 +1,6 @@
 import os
-from .helpers import *
+
+from folder_cleaner.helpers import *
 
 class FileGroup:
     def __init__(self, path:str, extensions:list) -> None:    
