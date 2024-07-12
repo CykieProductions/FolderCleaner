@@ -51,6 +51,8 @@ class Helpers:
     
     
     RECYCLE_PATH = "C:/$Recycle.Bin"
-    APPDATA_LOCAL = os.getenv('LOCALAPPDATA')
+    APP_NAME = "Cykie Folder Cleaner"
+    DATA_PATH = join_path_str(os.getenv('LOCALAPPDATA'), "Cykie Productions", APP_NAME)
     USER_PATH = os.path.expanduser('~').replace("\\", "/")
     DOWNLOADS_PATH = join_path_str(USER_PATH, "Downloads")
+    
