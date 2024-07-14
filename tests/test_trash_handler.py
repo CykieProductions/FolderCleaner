@@ -5,13 +5,12 @@ from unittest.mock import patch, MagicMock
 
 from folder_cleaner.trash_handler import *
 
-@pytest.mark.parametrize('box_val,success,max_size', 
-                        [('OK', True, 64), 
-                        ('OK', False, 3000), 
-                        ('Snooze', False, 64), 
-                        ('Cancel', False, 64)
+@pytest.mark.parametrize('box_val,expected,max_size', 
+                        [('OK', TrashCheckEnum.EMPTIED, 64), 
+                        ('OK', TrashCheckEnum.NOT_FULL, 3000), 
+                        ('Cancel', TrashCheckEnum.DENIED, 64)
                         ])
-async def test_try_empty_trash(box_val, success, max_size):
+async def test_try_empty_trash(box_val, expected, max_size):
     with patch('pymsgbox.confirm') as mock_confirm, \
     patch('winshell.recycle_bin') as mock_recycle_bin:
         # Arrange
@@ -34,4 +33,4 @@ async def test_try_empty_trash(box_val, success, max_size):
             else:
                 mock_recycle_bin.return_value.empty.assert_not_called()# not emptied
             
-        assert result == success
+        assert result == expected

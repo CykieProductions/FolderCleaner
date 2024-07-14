@@ -1,3 +1,4 @@
+import asyncio
 import winshell
 import pymsgbox
 
@@ -5,6 +6,14 @@ from datetime import date, timedelta
 import os
 
 from folder_cleaner.helpers import Helpers
+
+
+from enum import Enum
+
+class TrashCheckEnum(Enum):
+    NOT_FULL = 0
+    EMPTIED = 1
+    DENIED = 2
 
 trash_schedule_path = Helpers.join_path_str(Helpers.DATA_PATH, "trash schedule.txt")
 
@@ -46,8 +55,49 @@ async def try_empty_trash(max_size:int) -> bool:
         if choice == pymsgbox.OK_TEXT:
             winshell.recycle_bin().empty()
             save_scheduled_date(date.today() + timedelta(weeks=3), trash_schedule_path)
-            return True
+            return TrashCheckEnum.EMPTIED
         else:
             save_scheduled_date(date.today() + timedelta(days=2), trash_schedule_path)
-        
-    return False #REVIEW - Consider an enum instead of a bool
+            return TrashCheckEnum.DENIED
+    
+    save_scheduled_date(date.today() + timedelta(days=1), trash_schedule_path)
+    return TrashCheckEnum.NOT_FULL
+
+
+#region #* Init Trash Check
+scheduled_trash_date:date
+empty_trash_task:asyncio.Task = None
+load_trash_schedule_task:asyncio.Task = None
+
+async def load_trash_schedule_async(delay:float = 0):
+    global scheduled_trash_date
+    
+    if delay > 0:
+        await asyncio.sleep(delay)
+    
+    scheduled_trash_date = load_scheduled_date(trash_schedule_path)
+    print('Next scheduled trash date:', scheduled_trash_date, '\n')
+
+def update_trash_schedule_callback(future):
+    global scheduled_trash_date, load_trash_schedule_task
+    
+    print('Is the trash too full?', future.result() if future is not None else "Not checked")
+    if future is not None and future.result() is not TrashCheckEnum.DENIED:
+        asyncio.create_task(load_trash_schedule_async())# immediately load the schedule cause it likely changed
+    else:
+        delay = 60
+        if (load_trash_schedule_task is None or load_trash_schedule_task.done()):
+            load_trash_schedule_task = asyncio.create_task(load_trash_schedule_async(delay))# check the schedule again soon
+            print(f"Reloading the schedule in {delay} seconds.\n")
+
+def run_trash_check():
+    global scheduled_trash_date, empty_trash_task
+    
+    if is_scan_ready(scheduled_trash_date):
+        scheduled_trash_date = date.max
+        empty_trash_task = asyncio.create_task(try_empty_trash(90))
+        empty_trash_task.add_done_callback(update_trash_schedule_callback)
+    else:
+        update_trash_schedule_callback(None)# Periodically check the schedule for manual changes
+
+#endregion
