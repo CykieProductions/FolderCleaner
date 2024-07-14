@@ -73,7 +73,10 @@ async def load_trash_schedule_async(delay:float = 0):
     global scheduled_trash_date
     
     if delay > 0:
-        await asyncio.sleep(delay)
+        try:
+            await asyncio.sleep(delay)
+        except asyncio.CancelledError:
+            raise
     
     scheduled_trash_date = load_scheduled_date(trash_schedule_path)
     print('Next scheduled trash date:', scheduled_trash_date, '\n')
