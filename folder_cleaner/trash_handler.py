@@ -2,7 +2,7 @@ import asyncio
 import winshell
 import pymsgbox
 
-from datetime import date, timedelta
+from datetime import datetime, date, time, timedelta 
 import os
 
 from folder_cleaner.helpers import Helpers
@@ -63,6 +63,9 @@ async def try_empty_trash(max_size:int) -> bool:
     save_scheduled_date(date.today() + timedelta(days=1), trash_schedule_path)
     return TrashCheckEnum.NOT_FULL
 
+def alert_bedtime(bedtime:datetime):
+    if datetime.now() > bedtime:
+        pymsgbox.confirm("It's late, are you sure you want to continue?", "Bedtime")
 
 #region #* Init Trash Check
 scheduled_trash_date:date

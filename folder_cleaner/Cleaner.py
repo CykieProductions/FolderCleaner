@@ -1,9 +1,12 @@
 import sys
-sys.path.append(".")
+
 
 from watchdog.observers import Observer
 import asyncio
+from datetime import datetime, time
 
+sys.path.append(".")
+import trash_handler
 from folder_handler import FolderHandler
 from file_group import *
 from helpers import *
@@ -13,6 +16,8 @@ from trash_handler import load_trash_schedule_async, run_trash_check, empty_tras
 
 #* Folder Watch Logic
 async def run_observer():
+    startup_time:time = datetime.now()
+    
     global empty_trash_task, load_trash_schedule_task
     
     downloads_handler = FolderHandler(Helpers.join_path_str(Helpers.USER_PATH, "Downloads"), file_groups)
@@ -29,6 +34,12 @@ async def run_observer():
     
     try:
         while True:
+            
+            #straight forward bedtime check
+            bedtime = datetime.today().replace(hour=23, minute=20)
+            trash_handler.alert_bedtime(bedtime)
+            print("checked bedtime")
+            
             try:
                 await asyncio.sleep(10)
             except asyncio.CancelledError:
